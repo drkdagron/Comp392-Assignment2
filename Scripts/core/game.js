@@ -26,6 +26,7 @@ var renderer;
 var camera;
 var axes;
 var cube;
+var body;
 var plane;
 var sphere;
 var ambientLight;
@@ -43,7 +44,7 @@ function init() {
     scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
     console.log("Added Fog to scene...");
     // add an axis helper to the scene
-    axes = new AxisHelper(20);
+    axes = new AxisHelper(5);
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
     //Add a Plane to the Scene
@@ -51,6 +52,24 @@ function init() {
     plane.rotation.x = -0.5 * Math.PI;
     scene.add(plane);
     console.log("Added Plane Primitive to scene...");
+    var head = new gameObject(new CubeGeometry(3, 3, 3), new LambertMaterial({ color: 0xeeeeee }), 0, 0, 0);
+    head.position.set(0, 15, 0);
+    var body = new gameObject(new CubeGeometry(6, 6, 2), new LambertMaterial({ color: 0xbbaaee }), 0, 0, 0);
+    body.position.set(0, 10, 0);
+    var lleg = new gameObject(new CubeGeometry(2, 6, 2), new LambertMaterial({ color: 0xffffff }), 0, 0, 0);
+    lleg.position.set(2, 4, 0);
+    var rleg = new gameObject(new CubeGeometry(2, 6, 2), new LambertMaterial({ color: 0xffffff }), 0, 0, 0);
+    rleg.position.set(-2, 4, 0);
+    var larm = new gameObject(new CubeGeometry(1.2, 5, 1.2), new LambertMaterial({ color: 0x000000 }), 0, 0, 0);
+    larm.position.set(4, 10.5, 0);
+    var rarm = new gameObject(new CubeGeometry(1.2, 5, 1.2), new LambertMaterial({ color: 0x000000 }), 0, 0, 0);
+    rarm.position.set(-4, 10.5, 0);
+    scene.add(head);
+    scene.add(body);
+    scene.add(lleg);
+    scene.add(rleg);
+    scene.add(larm);
+    scene.add(rarm);
     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0x0c0c0c);
     scene.add(ambientLight);
@@ -99,9 +118,6 @@ function gameLoop() {
     // rotate the cubes around its axes
     scene.traverse(function (threeObject) {
         if (threeObject instanceof Mesh && threeObject != plane) {
-            threeObject.rotation.x += control.rotationSpeed;
-            threeObject.rotation.y += control.rotationSpeed;
-            threeObject.rotation.z += control.rotationSpeed;
         }
     });
     // render using requestAnimationFrame
