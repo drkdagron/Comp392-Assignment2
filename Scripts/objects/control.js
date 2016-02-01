@@ -4,34 +4,45 @@ var objects;
     // CONTROL CLASS ++++++++++++++++++++++++++++++++++++++++++
     var Control = (function () {
         // CONSTRUCTOR ++++++++++++++++++++++++++++++++++++++++
-        function Control(rotationSpeed, planeWidth, planeHeight) {
+        function Control(rotationSpeed, planeWidth, planeHeight, x, y, z) {
             this.rotationSpeed = rotationSpeed;
             this.numberOfObjects = scene.children.length;
             this._planeWidth = planeWidth;
             this._planeHeight = planeHeight;
+            this.rotateX = x;
+            this.rotateY = y;
+            this.rotateZ = z;
         }
-        //PUBLIC METHODS ++++++++++++++++++++++++++++++++++++++++
-        // Remove Cube Method +++++++++++++++++++++++++++++++++
-        Control.prototype.removeCube = function () {
-            var allChildren = scene.children;
-            var lastObject = allChildren[allChildren.length - 1];
-            if (lastObject instanceof THREE.Mesh) {
-                scene.remove(lastObject);
-                this.numberOfObjects = scene.children.length;
-            }
-        };
-        // Add Cube Method
-        Control.prototype.addCube = function () {
-            var cubeSize = Math.ceil((Math.random() * 3));
-            var cubeGeometry = new THREE.CubeGeometry(cubeSize, cubeSize, cubeSize);
-            var cubeMaterial = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff });
-            var cube = new objects.gameObject(cubeGeometry, cubeMaterial, -30 + Math.round((Math.random() * this._planeWidth)), Math.round((Math.random() * 5)), -20 + Math.round((Math.random() * this._planeHeight)));
-            scene.add(cube);
-            this.numberOfObjects = scene.children.length;
+        Control.prototype.resetObject = function () {
+            bodyMesh.rotation.set(0, 0, 0);
+            this.rotationSpeed = 0;
+            this.rotateX = 0;
+            this.rotateY = 0;
+            this.rotateZ = 0;
+            gui.__controllers[0].setValue(0); //set rotation speed
+            gui.__controllers[1].setValue(0); //set rotation x
+            gui.__controllers[2].setValue(0); //set rotation y
+            gui.__controllers[3].setValue(0); //set rotation z
         };
         // show scene objects
         Control.prototype.outputObjects = function () {
             console.log(scene.children);
+        };
+        Control.prototype.randomColours = function () {
+            head.material.setValues({ color: Math.floor(Math.random() * 16777215) });
+            body.material.setValues({ color: Math.floor(Math.random() * 16777215) });
+            larm.material.setValues({ color: Math.floor(Math.random() * 16777215) });
+            rarm.material.setValues({ color: Math.floor(Math.random() * 16777215) });
+            lleg.material.setValues({ color: Math.floor(Math.random() * 16777215) });
+            rleg.material.setValues({ color: Math.floor(Math.random() * 16777215) });
+        };
+        Control.prototype.PresetColours = function () {
+            head.material.setValues({ color: 0xcc9900 });
+            body.material.setValues({ color: 0x004d00 });
+            larm.material.setValues({ color: 0xcc9900 });
+            rarm.material.setValues({ color: 0xcc9900 });
+            lleg.material.setValues({ color: 0x000099 });
+            rleg.material.setValues({ color: 0x000099 });
         };
         return Control;
     })();

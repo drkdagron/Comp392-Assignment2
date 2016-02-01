@@ -26,7 +26,6 @@ var renderer;
 var camera;
 var axes;
 var cube;
-var body;
 var plane;
 var sphere;
 var ambientLight;
@@ -35,6 +34,13 @@ var control;
 var gui;
 var stats;
 var step = 0;
+var bodyMesh;
+var body;
+var head;
+var larm;
+var rarm;
+var lleg;
+var rleg;
 function init() {
     // Instantiate a new Scene object
     scene = new Scene();
@@ -52,24 +58,32 @@ function init() {
     plane.rotation.x = -0.5 * Math.PI;
     scene.add(plane);
     console.log("Added Plane Primitive to scene...");
-    var head = new gameObject(new CubeGeometry(3, 3, 3), new LambertMaterial({ color: 0xeeeeee }), 0, 0, 0);
+    bodyMesh = new THREE.Object3D();
+    head = new gameObject(new CubeGeometry(3, 3, 3), new LambertMaterial({ color: 0xcc9900 }), 0, 0, 0);
     head.position.set(0, 15, 0);
-    var body = new gameObject(new CubeGeometry(6, 6, 2), new LambertMaterial({ color: 0xbbaaee }), 0, 0, 0);
+    head.name = "head";
+    bodyMesh.add(head);
+    body = new gameObject(new CubeGeometry(6, 6, 2), new LambertMaterial({ color: 0x004d00 }), 0, 0, 0);
     body.position.set(0, 10, 0);
-    var lleg = new gameObject(new CubeGeometry(2, 6, 2), new LambertMaterial({ color: 0xffffff }), 0, 0, 0);
+    body.name = "body";
+    bodyMesh.add(body);
+    lleg = new gameObject(new CubeGeometry(2, 6, 2), new LambertMaterial({ color: 0X000099 }), 0, 0, 0);
     lleg.position.set(2, 4, 0);
-    var rleg = new gameObject(new CubeGeometry(2, 6, 2), new LambertMaterial({ color: 0xffffff }), 0, 0, 0);
+    lleg.name = "lleg";
+    bodyMesh.add(lleg);
+    rleg = new gameObject(new CubeGeometry(2, 6, 2), new LambertMaterial({ color: 0x000099 }), 0, 0, 0);
     rleg.position.set(-2, 4, 0);
-    var larm = new gameObject(new CubeGeometry(1.2, 5, 1.2), new LambertMaterial({ color: 0x000000 }), 0, 0, 0);
-    larm.position.set(4, 10.5, 0);
-    var rarm = new gameObject(new CubeGeometry(1.2, 5, 1.2), new LambertMaterial({ color: 0x000000 }), 0, 0, 0);
-    rarm.position.set(-4, 10.5, 0);
-    scene.add(head);
-    scene.add(body);
-    scene.add(lleg);
-    scene.add(rleg);
-    scene.add(larm);
-    scene.add(rarm);
+    rleg.name = "rleg";
+    bodyMesh.add(rleg);
+    larm = new gameObject(new CubeGeometry(5, 1.2, 1.2), new LambertMaterial({ color: 0xcc9900 }), 0, 0, 0);
+    larm.position.set(6, 12.5, 0);
+    larm.name = "larm";
+    bodyMesh.add(larm);
+    rarm = new gameObject(new CubeGeometry(5, 1.2, 1.2), new LambertMaterial({ color: 0xcc9900 }), 0, 0, 0);
+    rarm.position.set(-6, 12.5, 0);
+    rarm.name = "rarm";
+    bodyMesh.add(rarm);
+    scene.add(bodyMesh);
     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0x0c0c0c);
     scene.add(ambientLight);
@@ -82,7 +96,7 @@ function init() {
     console.log("Added a SpotLight Light to Scene");
     // add controls
     gui = new GUI();
-    control = new Control(0.02, 60, 40);
+    control = new Control(0.02, 60, 40, 0, 0, 0);
     addControl(control);
     console.log("Added Control to scene...");
     // Add framerate stats
@@ -98,11 +112,15 @@ function onResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 function addControl(controlObject) {
-    gui.add(controlObject, 'rotationSpeed', 0, 0.5);
-    gui.add(controlObject, 'addCube');
-    gui.add(controlObject, 'removeCube');
-    gui.add(controlObject, 'outputObjects');
-    gui.add(controlObject, 'numberOfObjects').listen();
+    gui.add(controlObject, 'rotationSpeed', -1, 1);
+    gui.add(controlObject, 'rotateX', -1, 1);
+    gui.add(controlObject, 'rotateY', -1, 1);
+    gui.add(controlObject, 'rotateZ', -1, 1);
+    gui.add(controlObject, 'resetObject');
+    gui.add(controlObject, 'randomColours');
+    gui.add(controlObject, 'PresetColours');
+}
+function resetControl(controlObject) {
 }
 function addStatsObject() {
     stats = new Stats();
@@ -117,7 +135,10 @@ function gameLoop() {
     stats.update();
     // rotate the cubes around its axes
     scene.traverse(function (threeObject) {
-        if (threeObject instanceof Mesh && threeObject != plane) {
+        if (threeObject == bodyMesh) {
+            bodyMesh.rotation.x += control.rotateX * control.rotationSpeed;
+            bodyMesh.rotation.y += control.rotateY * control.rotationSpeed;
+            bodyMesh.rotation.z += control.rotateZ * control.rotationSpeed;
         }
     });
     // render using requestAnimationFrame

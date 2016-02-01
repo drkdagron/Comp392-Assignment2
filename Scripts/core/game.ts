@@ -30,7 +30,6 @@ var renderer: Renderer;
 var camera: PerspectiveCamera;
 var axes: AxisHelper;
 var cube: Mesh;
-var body: Mesh[];
 var plane: Mesh;
 var sphere: Mesh;
 var ambientLight: AmbientLight;
@@ -39,6 +38,13 @@ var control: Control;
 var gui: GUI;
 var stats: Stats;
 var step: number = 0;
+var bodyMesh: THREE.Group;
+var body:Mesh;
+var head:Mesh;
+var larm:Mesh;
+var rarm:Mesh;
+var lleg:Mesh;
+var rleg:Mesh;
 
 function init() {
     // Instantiate a new Scene object
@@ -68,39 +74,49 @@ function init() {
     scene.add(plane);
     console.log("Added Plane Primitive to scene...");
      
-     var head = new gameObject(new CubeGeometry(3, 3, 3), 
-     new LambertMaterial({color: 0xeeeeee}), 0, 0, 0);
+     bodyMesh = new THREE.Object3D();
+     head = new gameObject(new CubeGeometry(3, 3, 3), 
+     new LambertMaterial({color: 0xcc9900}), 0, 0, 0);
      head.position.set(0, 15, 0);
+     head.name = "head";
+     bodyMesh.add(head);
      
-     var body = new gameObject(new CubeGeometry(6, 6 , 2), 
-     new LambertMaterial({color: 0xbbaaee}), 0, 0, 0);
+     body = new gameObject(new CubeGeometry(6, 6 , 2), 
+     new LambertMaterial({color: 0x004d00}), 0, 0, 0);
      body.position.set(0, 10, 0);
+     body.name = "body";
+     bodyMesh.add(body);
      
-     var lleg = new gameObject(new CubeGeometry(2, 6, 2), 
-     new LambertMaterial({color: 0xffffff}), 0, 0, 0);
+     lleg = new gameObject(new CubeGeometry(2, 6, 2), 
+     new LambertMaterial({color: 0X000099}), 0, 0, 0);
      lleg.position.set(2,4,0);
+     lleg.name = "lleg";
+     bodyMesh.add(lleg);
      
-     var rleg = new gameObject(new CubeGeometry(2, 6, 2),
-     new LambertMaterial({color: 0xffffff}), 0, 0, 0);
+     rleg = new gameObject(new CubeGeometry(2, 6, 2),
+     new LambertMaterial({color: 0x000099}), 0, 0, 0);
      rleg.position.set(-2, 4, 0);
+     rleg.name = "rleg";
+     bodyMesh.add(rleg);
      
-     var larm = new gameObject(new CubeGeometry(1.2, 5, 1.2),
-     new LambertMaterial({color: 0x000000}), 0, 0, 0);
-     larm.position.set(4, 10.5, 0);
+     larm = new gameObject(new CubeGeometry(5, 1.2, 1.2),
+     new LambertMaterial({color: 0xcc9900}), 0, 0, 0);
+     larm.position.set(6, 12.5, 0);
+     larm.name = "larm";
+     bodyMesh.add(larm);
+
      
-     var rarm = new gameObject(new CubeGeometry(1.2, 5, 1.2),
-     new LambertMaterial({color: 0x000000}), 0, 0, 0);
-     rarm.position.set(-4, 10.5, 0);
+     rarm = new gameObject(new CubeGeometry(5, 1.2, 1.2),
+     new LambertMaterial({color: 0xcc9900}), 0, 0, 0);
+     rarm.position.set(-6, 12.5, 0);
+     rarm.name = "rarm";
+     bodyMesh.add(rarm);
      
-    scene.add(head);
-    scene.add(body);
-    scene.add(lleg);
-    scene.add(rleg);
-    scene.add(larm);
-    scene.add(rarm);
+    scene.add(bodyMesh);
     
     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0x0c0c0c);
+   
     scene.add(ambientLight);
     console.log("Added an Ambient Light to Scene");
 	
@@ -113,7 +129,7 @@ function init() {
     
     // add controls
     gui = new GUI();
-    control = new Control(0.02, 60, 40);
+    control = new Control(0.02, 60, 40, 0, 0, 0);
     addControl(control);
     console.log("Added Control to scene...");
     
@@ -135,11 +151,17 @@ function onResize(): void {
 
 
 function addControl(controlObject: Control): void {
-    gui.add(controlObject, 'rotationSpeed', 0, 0.5);
-    gui.add(controlObject, 'addCube');
-    gui.add(controlObject, 'removeCube');
-    gui.add(controlObject, 'outputObjects');
-    gui.add(controlObject, 'numberOfObjects').listen();
+    gui.add(controlObject, 'rotationSpeed', -1, 1);
+    gui.add(controlObject, 'rotateX', -1, 1);
+    gui.add(controlObject, 'rotateY', -1, 1);
+    gui.add(controlObject, 'rotateZ', -1, 1);
+    gui.add(controlObject, 'resetObject');
+    gui.add(controlObject, 'randomColours');
+    gui.add(controlObject, 'PresetColours');
+}
+
+function resetControl(controlObject: Control): void {
+    
 }
 
 function addStatsObject() {
@@ -157,8 +179,11 @@ function gameLoop(): void {
     
     // rotate the cubes around its axes
     scene.traverse(function(threeObject:THREE.Object3D) {
-        if (threeObject instanceof Mesh && threeObject != plane) {
-
+        if (threeObject == bodyMesh) {
+            bodyMesh.rotation.x += control.rotateX * control.rotationSpeed;
+            bodyMesh.rotation.y += control.rotateY * control.rotationSpeed;
+            bodyMesh.rotation.z += control.rotateZ * control.rotationSpeed;
+            
             //threeObject.rotation.x += control.rotationSpeed;
             //threeObject.rotation.y += control.rotationSpeed;
             //threeObject.rotation.z += control.rotationSpeed;
