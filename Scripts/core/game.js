@@ -1,3 +1,9 @@
+//Game.ts
+//Stephen McKillop
+//Last Modified: Feb, 01, 2016
+//Last Modified by: Stephen McKillop
+//Global Controller for assignment 1
+//Revision History: Initial and Complete, haha
 /// <reference path="_reference.ts"/>
 // MAIN GAME FILE
 // THREEJS Aliases
@@ -96,7 +102,7 @@ function init() {
     console.log("Added a SpotLight Light to Scene");
     // add controls
     gui = new GUI();
-    control = new Control(0.02, 60, 40, 0, 0, 0);
+    control = new Control(0.02, 60, 40, 0.01, 0.01, 0.01);
     addControl(control);
     console.log("Added Control to scene...");
     // Add framerate stats
