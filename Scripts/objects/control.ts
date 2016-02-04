@@ -28,7 +28,7 @@ module objects {
         }
 
         public resetObject(): void {
-            bodyMesh.rotation.set(0,0,0);
+            //bodyMesh.rotation.set(0,0,0);
             this.rotationSpeed = 0;
             this.rotateX = 0;
             this.rotateY = 0;
