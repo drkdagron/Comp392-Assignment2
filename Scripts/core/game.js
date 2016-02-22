@@ -38,14 +38,7 @@ var spotLight;
 var control;
 var gui;
 var stats;
-var step = 0;
-var bodyMesh;
 var sun;
-var p1;
-var p2;
-var p3;
-var p4;
-var orbit = 0;
 var planets;
 function init() {
     // Instantiate a new Scene object
@@ -53,24 +46,29 @@ function init() {
     setupRenderer(); // setup the default renderer
     setupCamera(); // setup the camera
     // add an axis helper to the scene
-    axes = new AxisHelper(15);
+    axes = new AxisHelper(20);
     scene.add(axes);
-    console.log("Added  Helper to scene...");
+    console.log("Added Helper to scene...");
     //Add a Plane to the Scene
-    sun = new gameObject(new SphereGeometry(10, 30, 30), new THREE.MeshPhongMaterial({ color: 0x666600, emissive: 0x333300 }), 0, 0, 0);
-    sun.rotation.x = -0.5 * Math.PI;
+    sun = new gameObject(new SphereGeometry(10, 30, 30), new THREE.MeshPhongMaterial({ color: 0x666600 }), 0, 0, 0);
+    sun.receiveShadow = true;
+    sun.castShadow = true;
+    console.log("created sun");
+    scene.add(sun);
+    console.log("Added sun to scene...");
     var sunLight = new PointLight(0xFFFFFF, 10, 100);
-    sunLight.castShadow = true;
+    //sunLight.castShadow= true;
     sunLight.position.set(0, 0, 0);
     scene.add(sunLight);
     scene.add(sun);
     planets = new Array();
     //planets
-    planets.push(new objects.planet(new SphereGeometry(2, 10, 10), new LambertMaterial({ color: 0xFFFFFF }), 0, 0, 0, 0.002, 40, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(4, 10, 10), new LambertMaterial({ color: 0xFF00FF }), 0, 0, 0, 0.005, 20, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(6, 10, 10), new THREE.MeshPhongMaterial({ color: 0x00FFFF }), 0, 0, 0, -0.009, 70, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(3, 10, 10), new LambertMaterial({ color: 0xFFFF00 }), 0, 0, 0, 0.017, 95, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(1.5, 10, 10), new LambertMaterial({ color: 0xffffff }), 0, 0, 0, 0.055, 10, planets[2].position));
+    planets.push(new objects.planet(new SphereGeometry(2, 10, 10), new THREE.MeshPhongMaterial({ color: 0xFFFFFF }), 0, 0, 0, 0.002, 40, new Vector3(0, 0, 0)));
+    planets.push(new objects.planet(new SphereGeometry(4, 10, 10), new THREE.MeshPhongMaterial({ color: 0xFF00FF }), 0, 0, 0, 0.005, 20, new Vector3(0, 0, 0)));
+    planets.push(new objects.planet(new SphereGeometry(6, 10, 10), new THREE.MeshPhongMaterial({ color: 0x00FFFF }), 0, 0, 0, -0.009, 70, new Vector3(0, 0, 0)));
+    planets.push(new objects.planet(new SphereGeometry(3, 10, 10), new THREE.MeshPhongMaterial({ color: 0xFFFF00 }), 0, 0, 0, 0.017, 95, new Vector3(0, 0, 0)));
+    planets.push(new objects.planet(new SphereGeometry(2, 10, 10), new THREE.MeshPhongMaterial({ color: 0x00FFFF }), 0, 0, 0, 0.03, 53, new Vector3(0, 0, 0)));
+    planets.push(new objects.planet(new SphereGeometry(1.5, 10, 10), new THREE.MeshPhongMaterial({ color: 0xffffff }), 0, 0, 0, 0.055, 10, planets[2].position));
     //p2 = new gameObject(new SphereGeometry(7, 10, 10), new LambertMaterial({color:0x00ff00}), 0, 0, 0);
     //p3 = new gameObject(new SphereGeometry(4, 10, 10), new LambertMaterial({color:0x0000ff}), 0, 0, 0);
     //p4 = new gameObject(new SphereGeometry(2, 10, 10), new LambertMaterial({color:0xffff00}), 0, 0, 0);
@@ -79,16 +77,14 @@ function init() {
     //p4.position = new Vector3(0, 150, 0);
     //adding to stage
     for (var pl = 0; pl < planets.length; pl++) {
-        scene.add(planets[pl]);
         planets[pl].castShadow = true;
         planets[pl].receiveShadow = true;
+        scene.add(planets[pl]);
     }
     //scene.add(p1);
     //scene.add(p2);
     //scene.add(p3);
     //scene.add(p4);
-    scene.add(ambientLight);
-    console.log("Added an Ambient Light to Scene");
     // add controls
     gui = new GUI();
     control = new Control(0.02, 60, 40, 0.01, 0.01, 0.01);

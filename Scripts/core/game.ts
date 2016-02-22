@@ -59,49 +59,33 @@ function init() {
     setupCamera(); // setup the camera
    
     // add an axis helper to the scene
-    axes = new AxisHelper(15);
+    axes = new AxisHelper(20);
     scene.add(axes);
     console.log("Added Helper to scene...");
-    /*
+    
     //Add a Plane to the Scene
-    sun = new gameObject(new SphereGeometry(10, 30, 30), new LambertMaterial({ color: 0x666600 }), 0, 0, 0);
+    sun = new gameObject(new SphereGeometry(10, 30, 30), new THREE.MeshPhongMaterial({ color: 0x666600 }), 0, 0, 0);
+    sun.receiveShadow = true;
+    sun.castShadow = true;
     console.log("created sun");
     scene.add(sun);
-    console.log("Added sun to scene...");
     
+    console.log("Added sun to scene...");  
     
-    var spotAim1 = new THREE.Object3D();
-    spotAim1.position.set(0, 2, 0);
-    var spotAim2 = new THREE.Object3D();
-    spotAim2.position.set(0, -2, 0);
-    console.log("Spots:" + spotAim1.position + ", " + spotAim2.position);
-    console.log("added helpers to scene...");
-    
-    var light1 = new THREE.SpotLight(0xFFFFFF, 10, 100, 180);
-    light1.castShadow = true;
-    light1.target = spotAim1;
-    scene.add(light1);
-    var light2 = new THREE.SpotLight(0xFFFFFF, 10, 100, 180);
-    light2.castShadow = true;
-    light2.target = spotAim2;
-    scene.add(light2);
-    console.log("Added lights to scene...");
-    */
-    
-    //var sunLight = new PointLight(0xFFFFFF, 10, 100);
+    var sunLight = new PointLight(0xFFFFFF, 10, 100);
     //sunLight.castShadow= true;
-    //sunLight.position.set(0, 0, 0);
-    //scene.add(sunLight);
-    
-    /*
+    sunLight.position.set(0, 0, 0);
+    scene.add(sunLight);
+    scene.add(sun);
     
     planets = new Array<objects.planet>();
     
     //planets
-    planets.push(new objects.planet(new SphereGeometry(2, 10, 10), new THREE.MeshPhongMaterial({color:0xFFFFFF}), 0, 0, 0, 0.002, 40, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(4, 10, 10), new THREE.MeshPhongMaterial({color:0xFF00FF}), 0, 0, 0, 0.005, 20, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(6, 10, 10), new THREE.MeshPhongMaterial({color:0x00FFFF}), 0, 0, 0, -0.009, 70, sun.position));
-    planets.push(new objects.planet(new SphereGeometry(3, 10, 10), new THREE.MeshPhongMaterial({color:0xFFFF00}), 0, 0, 0, 0.017, 95, sun.position));
+    planets.push(new objects.planet(new SphereGeometry(2, 10, 10), new THREE.MeshPhongMaterial({color:0xFFFFFF}), 0, 0, 0, 0.002, 40, new Vector3(0,0,0)));
+    planets.push(new objects.planet(new SphereGeometry(4, 10, 10), new THREE.MeshPhongMaterial({color:0xFF00FF}), 0, 0, 0, 0.005, 20, new Vector3(0,0,0)));
+    planets.push(new objects.planet(new SphereGeometry(6, 10, 10), new THREE.MeshPhongMaterial({color:0x00FFFF}), 0, 0, 0, -0.009, 70, new Vector3(0,0,0)));
+    planets.push(new objects.planet(new SphereGeometry(3, 10, 10), new THREE.MeshPhongMaterial({color:0xFFFF00}), 0, 0, 0, 0.017, 95, new Vector3(0,0,0)));
+    planets.push(new objects.planet(new SphereGeometry(2, 10, 10), new THREE.MeshPhongMaterial({color:0x00FFFF}), 0, 0, 0, 0.03, 53, new Vector3(0,0,0)));
     planets.push(new objects.planet(new SphereGeometry(1.5, 10, 10), new THREE.MeshPhongMaterial({color:0xffffff}), 0, 0, 0, 0.055, 10, planets[2].position));
     
     //p2 = new gameObject(new SphereGeometry(7, 10, 10), new LambertMaterial({color:0x00ff00}), 0, 0, 0);
@@ -115,16 +99,16 @@ function init() {
     //adding to stage
     for (var pl = 0; pl < planets.length; pl++)
     {
+        planets[pl].castShadow = true;
+        planets[pl].receiveShadow = true;
         scene.add(planets[pl]);
-        //planets[pl].castShadow = true;
-        //planets[pl].receiveShadow = true;
     }
     //scene.add(p1);
     //scene.add(p2);
     //scene.add(p3);
     //scene.add(p4);
     
-    */
+    
     
     // add controls
     gui = new GUI();
@@ -170,10 +154,10 @@ function addStatsObject() {
 function gameLoop(): void {
     stats.update();
     
-    //for (var pl = 0; pl < planets.length; pl++)
-    //{
-    //    planets[pl].update();
-    //}
+    for (var pl = 0; pl < planets.length; pl++)
+    {
+        planets[pl].update();
+    }
     
     // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);

@@ -14,7 +14,7 @@ var objects;
             this.rotateZ = z;
         }
         Control.prototype.resetObject = function () {
-            bodyMesh.rotation.set(0, 0, 0);
+            //bodyMesh.rotation.set(0,0,0);
             this.rotationSpeed = 0;
             this.rotateX = 0;
             this.rotateY = 0;
